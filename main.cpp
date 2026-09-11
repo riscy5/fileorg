@@ -1,4 +1,4 @@
-// Z:\fileorg_experimentation will be used for desktop directory experimentation
+// Z:/fileorg_experimentation will be used for desktop directory experimentation
 
 #include <string>
 #include <fstream>
@@ -13,15 +13,21 @@ using namespace std;
 string old_extractFilename(const path& f) {
     string filenameWithExt = f.filename().string();
     string filenameNoExt;
+    int extIndex = -1;
 
-    for(int i = 0; i < filenameWithExt.size(); i++) {
-        
-        // filename with no extension will always be < filename with extension
-        filenameNoExt += filenameWithExt[i];
-        
-        if(filenameWithExt[i + 1] == '.') {
+    for(int i = filenameWithExt.size() - 1; i > 0; i--) {
+        if(filenameWithExt[i] == '.') {
+            extIndex = i;
             break;
         }
+    }
+
+    if (extIndex == -1) {
+        return filenameWithExt;
+    }
+    
+    for(int p = 0; p < extIndex; p++) {
+        filenameNoExt += filenameWithExt[p];
     }
 
     return filenameNoExt;
@@ -40,7 +46,7 @@ string extractExtension(const path &f) {
 }
 
 string extractFilename(const path &f) {
-    return f.extension().stem().string();
+    return f.stem().string();
 }
 
 
@@ -48,7 +54,7 @@ void directoryfilesToVector(vector<file> &v, const path &d) {
     file input;
     
     for(path in : directory_iterator(d)) {
-        input.filename = extractFilename(in);
+        input.filename = old_extractFilename(in);
         input.extension = extractExtension(in);
         v.insert(v.end(), input);
     }

@@ -9,6 +9,11 @@
 using namespace std::filesystem;
 using namespace std;
 
+struct file {
+    string filename;
+    string extension;
+};
+
 // const so it doesn't modify
 // & call by reference to indicate file won't be modified due to const
 
@@ -16,8 +21,22 @@ string extractExtension(const path& f) {
     return f.extension().string();
 }
 
+// will NOT include extension in name, extracts SOLELY the filename
 string extractFilename(const path& f) {
-    return f.filename().string();
+    string filenameWithExt = f.filename().string();
+    string filenameNoExt;
+
+    for(int i = 0; i < filenameWithExt.size(); i++) {
+        
+        // filename with no extension will always be < filename with extension
+        filenameNoExt += filenameWithExt[i];
+        
+        if(filenameWithExt[i + 1] == '.') {
+            break;
+        }
+    }
+
+    return filenameNoExt;
 }
 
 void directoryfilesToVector(vector<file> &v, const path &d) {
@@ -30,13 +49,8 @@ void directoryfilesToVector(vector<file> &v, const path &d) {
     }
 }
 
-struct file {
-    string filename;
-    string extension;
-};
-
 int main() {
-    path maindir = "Z:\fileorg_experimentation";
+    path maindir = "Z:/fileorg_experimentation";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;
@@ -48,6 +62,6 @@ int main() {
     directoryfilesToVector(allFiles, maindir);
 
     for(int i = 0; i < allFiles.size(); i++) {
-        cout << "File " << i + 1 << ": " << allFiles[i].filename << allFiles[i].extension;
+        cout << "File " << i + 1 << ": " << allFiles[i].filename << allFiles[i].extension << endl;
     }
 }

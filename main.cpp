@@ -9,20 +9,8 @@
 using namespace std::filesystem;
 using namespace std;
 
-struct file {
-    string filename;
-    string extension;
-};
-
-// const so it doesn't modify
-// & call by reference to indicate file won't be modified due to const
-
-string extractExtension(const path& f) {
-    return f.extension().string();
-}
-
 // will NOT include extension in name, extracts SOLELY the filename
-string extractFilename(const path& f) {
+string old_extractFilename(const path& f) {
     string filenameWithExt = f.filename().string();
     string filenameNoExt;
 
@@ -38,6 +26,23 @@ string extractFilename(const path& f) {
 
     return filenameNoExt;
 }
+
+struct file {
+    string filename;
+    string extension;
+};
+
+// const so it doesn't modify
+// & call by reference to indicate file won't be modified due to const
+
+string extractExtension(const path &f) {
+    return f.extension().string();
+}
+
+string extractFilename(const path &f) {
+    return f.extension().stem().string();
+}
+
 
 void directoryfilesToVector(vector<file> &v, const path &d) {
     file input;

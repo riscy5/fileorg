@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <iostream>
 #include <vector>
+#include <map>
 
 using namespace std::filesystem;
 using namespace std;
@@ -25,7 +26,7 @@ string old_extractFilename(const path& f) {
     if (extIndex == -1) {
         return filenameWithExt;
     }
-    
+
     for(int p = 0; p < extIndex; p++) {
         filenameNoExt += filenameWithExt[p];
     }
@@ -48,7 +49,6 @@ string extractExtension(const path &f) {
 string extractFilename(const path &f) {
     return f.stem().string();
 }
-
 
 void directoryfilesToVector(vector<file> &v, const path &d) {
     file input;

@@ -41,7 +41,7 @@ struct file {
 };
 
 // const so it doesn't modify
-// & call by reference to indicate file won't be modified due to const
+// call by reference (&) to indicate file struct won't be modified due to const
 
 string extractExtension(const path &f) {
     return f.extension().string();
@@ -61,6 +61,12 @@ void directoryfilesToVector(vector<file> &v, const path &d) {
     }
 }
 
+void displayAllFiles(const vector<file> &v) {
+    for(int i = 0; i < v.size(); i++) {
+        cout << "File " << i + 1 << ": " << v[i].filename << v[i].extension << endl;
+    }
+}
+
 int main() {
     path maindir = "Z:/fileorg_experimentation";
 
@@ -73,7 +79,5 @@ int main() {
 
     directoryfilesToVector(allFiles, maindir);
 
-    for(int i = 0; i < allFiles.size(); i++) {
-        cout << "File " << i + 1 << ": " << allFiles[i].filename << allFiles[i].extension << endl;
-    }
+    displayAllFiles(allFiles);
 }

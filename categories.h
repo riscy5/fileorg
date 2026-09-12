@@ -19,6 +19,21 @@ const map<string, vector<string>> categoryGroups = {
     {"Code",      {".cpp", ".c", ".h", ".hpp", ".py", ".java", ".js", ".html", ".css", ".php", ".rb", ".go", ".rs", ".swift", ".sh", ".bat", ".json", ".xml", ".yaml", ".yml", ".sql", ".cs", ".kt", ".lua", ".pl", ".scss", ".sass", ".jsx", ".tsx", ".vue", ".ini", ".toml", ".r", ".m"}},
     {"Executables", {".exe", ".msi", ".app", ".dmg", ".deb", ".rpm", ".apk", ".bin", ".com", ".jar", ".run", ".appimage", ".msix"}},
     {"Fonts",     {".ttf", ".otf", ".woff", ".woff2", ".pfb", ".pfm", ".eot"}},
-    {"Shortcut", {".lnk", ".url", ".pif"}},
+    {"Shortcuts", {".lnk", ".url", ".pif"}},
     {"System Lib", {".dll", ".sys", ".ocx", ".drv", ".cpl", ".icl", ".fon", ".vxd", ".tlb", ".olb", ".mui", ".efi"}},
 };
+
+unordered_map<string,string> buildExtensionMap() {
+    unordered_map<string,string> extensionMap;
+
+    for(auto catIt = categoryGroups.begin(); catIt != categoryGroups.end(); ++catIt) {
+        string cat = (*catIt).first;
+        vector<string> ext = (*catIt).second;
+
+        for(auto extIt = ext.begin(); extIt != ext.end(); ++extIt) {
+            extensionMap[*extIt] = cat;
+        }
+    }
+
+    return extensionMap;
+}

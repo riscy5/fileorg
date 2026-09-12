@@ -76,8 +76,26 @@ int main() {
     }
 
     vector<file> allFiles;
-
     directoryfilesToVector(allFiles, maindir);
-
     displayAllFiles(allFiles);
+    unordered_map<string, string> hashedExtensions = buildExtensionMap();
+
+    for(int p = 0; p < allFiles.size(); p++){
+        auto check = hashedExtensions.find(allFiles[p].extension);
+        string category;
+
+        if (check != hashedExtensions.end()) {
+            category = (*check).second;
+        } else {
+            category = "Other";
+        }
+
+        if(!exists(maindir / category)){
+            create_directory(maindir / category);
+        }
+
+        string fullFileName = allFiles[p].filename + allFiles[p].extension; 
+        rename(maindir / fullFileName, maindir / category / fullFileName);
+    }
+
 }

@@ -102,6 +102,14 @@ int main() {
         }
 
         string fullFileName = allFiles[p].filename + allFiles[p].extension; 
+        
+        // check if its a self-nesting directory
+        if(maindir / fullFileName / fullFileName == maindir / category / fullFileName) {
+            continue;
+        }
+
+        cout << maindir / category / fullFileName;
+
         rename(maindir / fullFileName, maindir / category / fullFileName);
     }
 

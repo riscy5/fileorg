@@ -67,7 +67,8 @@ void displayAllFiles(const vector<file> &v) {
     }
 }
 
-bool checkDuplicate(const file &c, const path &d) {
+// Do not include file name in destination directory path!
+bool isDuplicate(const file &c, const path &d) {
     string fullFileName = c.filename + c.extension;
     
     for(auto it : directory_iterator(d)) {
@@ -79,6 +80,7 @@ bool checkDuplicate(const file &c, const path &d) {
     return false;
 }
 
+// Do not include file name in destination directory path!
 path duplicatePathCreator(const file &c, const path &d) {
     // start as a int return as string: (n)
     path fileWDir = d / (c.filename + c.extension);
@@ -130,15 +132,16 @@ void createAndMoveFiles(const vector<file> &allFiles, const path main_directory)
             continue;
         }
 
-        // debug print to view file moves that occur
-        cout << main_directory / category / fullFileName << endl;
-
-        rename(main_directory / fullFileName, main_directory / category / fullFileName);
+        if(isDuplicate(allFiles[p], main_directory / category)) {
+            rename(main_directory / fullFileName, duplicatePathCreator(allFiles[p], main_directory / category));
+        } else {
+            rename(main_directory / fullFileName, main_directory / category / fullFileName);
+        }
     }
 }
 
 int main() {
-    path maindir = "Z:/fileorg_experimentation - Copy - Copy";
+    path maindir = "Z:/fileorg_duplicate_test";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;

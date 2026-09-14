@@ -67,26 +67,16 @@ void displayAllFiles(const vector<file> &v) {
     }
 }
 
-int main() {
-    path maindir = "Z:/fileorg_experimentation - Copy";
-
-    if(!exists(maindir)) {
-        cout << "Directory does not exist." << endl;
-        return 1;
-    }
-
-    vector<file> allFiles;
-    directoryfilesToVector(allFiles, maindir);
-    displayAllFiles(allFiles);
+void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {
     unordered_map<string, string> hashedExtensions = buildExtensionMap();
-
+    
     for(int p = 0; p < allFiles.size(); p++){
         // checks whether extension belongs in the hash map
         auto check = hashedExtensions.find(allFiles[p].extension);
         string category;
         
         // Following comments indicate case
-        if (is_directory(maindir / allFiles[p].filename) && categoryGroups.find(allFiles[p].filename) != categoryGroups.end()) {
+        if (is_directory(main_directory / allFiles[p].filename) && categoryGroups.find(allFiles[p].filename) != categoryGroups.end()) {
             // this entry is itself an existing category folder (e.g. "Images"), not a file to sort — skip it so it never gets moved
             continue;
         } else if (check != hashedExtensions.end()) {
@@ -97,20 +87,35 @@ int main() {
             category = "Other";
         }
 
-        if(!exists(maindir / category)){
-            create_directory(maindir / category);
+        if(!exists(main_directory / category)){
+            create_directory(main_directory / category);
         }
 
         string fullFileName = allFiles[p].filename + allFiles[p].extension; 
         
         // check if its a self-nesting directory
-        if(maindir / fullFileName / fullFileName == maindir / category / fullFileName) {
+        if(main_directory / fullFileName / fullFileName == main_directory / category / fullFileName) {
             continue;
         }
 
-        cout << maindir / category / fullFileName;
+        // debug print to view file moves that occur
+        cout << main_directory / category / fullFileName << endl;
 
-        rename(maindir / fullFileName, maindir / category / fullFileName);
+        rename(main_directory / fullFileName, main_directory / category / fullFileName);
     }
+}
+
+int main() {
+    path maindir = "Z:/fileorg_experimentation - Copy - Copy";
+
+    if(!exists(maindir)) {
+        cout << "Directory does not exist." << endl;
+        return 1;
+    }
+
+    vector<file> allFiles;
+    directoryfilesToVector(allFiles, maindir);
+    displayAllFiles(allFiles);
+    createAndMoveFiles(allFiles, maindir);
 
 }

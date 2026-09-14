@@ -54,9 +54,9 @@ string extractFilename(const path &f) {
 void directoryfilesToVector(vector<file> &v, const path &d) {
     file input;
     
-    for(path in : directory_iterator(d)) {
-        input.filename = old_extractFilename(in);
-        input.extension = extractExtension(in);
+    for(path it : directory_iterator(d)) {
+        input.filename = old_extractFilename(it);
+        input.extension = extractExtension(it);
         v.insert(v.end(), input);
     }
 }
@@ -65,6 +65,38 @@ void displayAllFiles(const vector<file> &v) {
     for(int i = 0; i < v.size(); i++) {
         cout << "File " << i + 1 << ": " << v[i].filename << v[i].extension << endl;
     }
+}
+
+bool checkDuplicate(const file &c, const path &d) {
+    string fullFileName = c.filename + c.extension;
+    
+    for(auto it : directory_iterator(d)) {
+        if(fullFileName == it.path().filename()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+path duplicatePathCreator(const file &c, const path &d) {
+    // start as a int return as string: (n)
+    path fileWDir = d / (c.filename + c.extension);
+
+    int n = 1;
+
+    // Example: test.txt, test (1).txt, ...., test (n).txt
+    // Structure: <filename> + <extension>, <filename> + " (" + 1 + ")"
+    while(exists(fileWDir)) {
+        fileWDir = d / (c.filename + (" (" + to_string(n) + ")" + c.extension) );
+        cout << c.filename + (" (" + to_string(n) + ")" + c.extension);
+        n++;
+    }
+
+    // debug print for identifying duplicates
+    // cout << fileWDir;
+
+    return fileWDir;
 }
 
 void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {

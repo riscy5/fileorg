@@ -20,7 +20,7 @@ const map<string, vector<string>> categoryGroups = {
     {"Executables", {".exe", ".msi", ".app", ".dmg", ".deb", ".rpm", ".apk", ".bin", ".com", ".jar", ".run", ".appimage", ".msix"}},
     {"Fonts",     {".ttf", ".otf", ".woff", ".woff2", ".pfb", ".pfm", ".eot"}},
     {"Shortcuts", {".lnk", ".url", ".pif"}},
-    {"System Lib", {".dll", ".sys", ".ocx", ".drv", ".cpl", ".icl", ".fon", ".vxd", ".tlb", ".olb", ".mui", ".efi"}},
+    {"System Library", {".dll", ".sys", ".ocx", ".drv", ".cpl", ".icl", ".fon", ".vxd", ".tlb", ".olb", ".mui", ".efi"}},
 };
 
 unordered_map<string,string> buildExtensionMap() {

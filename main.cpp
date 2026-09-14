@@ -68,7 +68,7 @@ void displayAllFiles(const vector<file> &v) {
 }
 
 int main() {
-    path maindir = "Z:/fileorg_experimentation";
+    path maindir = "Z:/fileorg_experimentation - Copy";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;
@@ -81,12 +81,19 @@ int main() {
     unordered_map<string, string> hashedExtensions = buildExtensionMap();
 
     for(int p = 0; p < allFiles.size(); p++){
+        // checks whether extension belongs in the hash map
         auto check = hashedExtensions.find(allFiles[p].extension);
         string category;
-
-        if (check != hashedExtensions.end()) {
+        
+        // Following comments indicate case
+        if (is_directory(maindir / allFiles[p].filename) && categoryGroups.find(allFiles[p].filename) != categoryGroups.end()) {
+            // this entry is itself an existing category folder (e.g. "Images"), not a file to sort — skip it so it never gets moved
+            continue;
+        } else if (check != hashedExtensions.end()) {
+            // extension matched an entry in hashedExtensions, so use its mapped category name
             category = (*check).second;
         } else {
+            // extension has no known category, so classify as "Other"
             category = "Other";
         }
 

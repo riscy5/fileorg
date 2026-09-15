@@ -43,11 +43,11 @@ struct file {
 // const so it doesn't modify
 // call by reference (&) to indicate file struct won't be modified due to const
 
-string extractExtension(const path &f) {
+inline string extractExtension(const path &f) {
     return f.extension().string();
 }
 
-string extractFilename(const path &f) {
+inline string extractFilename(const path &f) {
     return f.stem().string();
 }
 
@@ -99,6 +99,11 @@ path duplicatePathCreator(const file &c, const path &d) {
     // cout << fileWDir;
 
     return fileWDir;
+}
+
+// Uses the directory where unorganized files are located
+void logCreator(const file &c, const path &d) {
+    
 }
 
 void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {

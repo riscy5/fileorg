@@ -6,6 +6,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <ctime>
 #include "categories.h"
 
 using namespace std::filesystem;
@@ -101,6 +102,25 @@ path duplicatePathCreator(const file &c, const path &d) {
     return fileWDir;
 }
 
+
+string categoryFinder(const file &c, const path &mainDir, const auto iterator) {
+    string category;
+
+    // Following comments indicate case
+        if (is_directory(mainDir / c.filename) && categoryGroups.find(c.filename) != categoryGroups.end()) {
+            // this entry is itself an existing category folder (e.g. "Images"), not a file to sort — skip it so it never gets moved
+            // category (string) is empty, a continue statement existed in place of this
+        } else if (iterator != hashedExtensions.end()) {
+            // extension matched an entry in hashedExtensions, so use its mapped category name
+            category = (*iterator).second;
+        } else {
+            // extension has no known category, so classify as "Other"
+            category = "Other";
+        }
+
+    return category;
+}
+
 // Use the directory where file will go (destination)!
 void logApp(const string &fullFileName, const path &dest, const path &logOutPath = "organizer.log") {
     ofstream logFile(logOutPath, ios::app);
@@ -115,24 +135,42 @@ void logApp(const string &fullFileName, const path &dest, const path &logOutPath
     logFile.close();
 }
 
+void logHeader(const path &logOutPath = "organizer.log") {
+    ofstream logFile(logOutPath, ios::app);
+
+    if(!logFile.is_open()) {
+        cout << "File failed to open.";
+        return;
+    }
+
+    time_t now = time(0);
+    tm *localTime = localtime(&now);
+
+
+    // "=== Run: YYYY-MM-DD HH:MM:SS ==="
+    logFile << "\n=== Run: " << (1900 + localTime->tm_year) 
+            << "-" << (1 + localTime->tm_mon)
+            << "-" << localTime->tm_mday 
+            << " " << localTime->tm_hour 
+            << ":" << localTime->tm_min 
+            << ":" << localTime->tm_sec 
+            << " ===" << "\n";
+
+    logFile.close();
+}
+
 void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {
-    unordered_map<string, string> hashedExtensions = buildExtensionMap();
+    logHeader();
     
     for(int p = 0; p < allFiles.size(); p++){
         // checks whether extension belongs in the hash map
         auto check = hashedExtensions.find(allFiles[p].extension);
         string category;
-        
-        // Following comments indicate case
-        if (is_directory(main_directory / allFiles[p].filename) && categoryGroups.find(allFiles[p].filename) != categoryGroups.end()) {
-            // this entry is itself an existing category folder (e.g. "Images"), not a file to sort — skip it so it never gets moved
+
+        category = categoryFinder(allFiles[p], main_directory, check);
+
+        if(category.empty()) {
             continue;
-        } else if (check != hashedExtensions.end()) {
-            // extension matched an entry in hashedExtensions, so use its mapped category name
-            category = (*check).second;
-        } else {
-            // extension has no known category, so classify as "Other"
-            category = "Other";
         }
 
         if(!exists(main_directory / category)){
@@ -157,7 +195,7 @@ void createAndMoveFiles(const vector<file> &allFiles, const path main_directory)
 }
 
 int main() {
-    path maindir = "Z:/fileorg_experimentation - Copy - Copy";
+    path maindir = "Z:/fileorg_experimentation - Copy - Copy - Copy";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;

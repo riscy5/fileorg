@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <unordered_set>
 #include <unordered_map>
 
 using namespace std;
@@ -36,6 +37,22 @@ unordered_map<string,string> buildExtensionMap() {
     return extensionMap;
 }
 
+unordered_set<string> buildExtensionSet() {
+    unordered_set<string> extensionSet;
+
+    for(auto catIt = categoryGroups.begin(); catIt != categoryGroups.end(); ++catIt) {
+        vector<string> exts = (*catIt).second;
+        
+        for(auto extIt = exts.begin(); extIt != exts.end(); ++extIt) {
+            extensionSet.insert( (*extIt) );
+        }
+
+    }
+
+    return extensionSet;
+}
+
+unordered_set<string> hashedExtensionSet = buildExtensionSet();
 unordered_map<string, string> hashedExtensions = buildExtensionMap();
 
 #endif

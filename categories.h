@@ -1,8 +1,6 @@
 #ifndef categoriesh
 #define categoriesh
 
-#endif
-
 #include <string>
 #include <vector>
 #include <map>
@@ -37,3 +35,7 @@ unordered_map<string,string> buildExtensionMap() {
 
     return extensionMap;
 }
+
+unordered_map<string, string> hashedExtensions = buildExtensionMap();
+
+#endif

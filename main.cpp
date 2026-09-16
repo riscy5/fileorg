@@ -101,9 +101,18 @@ path duplicatePathCreator(const file &c, const path &d) {
     return fileWDir;
 }
 
-// Uses the directory where unorganized files are located
-void logCreator(const file &c, const path &d) {
-    
+// Use the directory where file will go (destination)!
+void logApp(const string &fullFileName, const path &dest, const path &logOutPath = "organizer.log") {
+    ofstream logFile(logOutPath, ios::app);
+
+    if(!logFile.is_open()) {
+        cout << "File failed to open.";
+        return;
+    }
+
+    logFile << "Moved: " + fullFileName + " to " + dest.string() << "\n";
+
+    logFile.close();
 }
 
 void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {
@@ -139,14 +148,16 @@ void createAndMoveFiles(const vector<file> &allFiles, const path main_directory)
 
         if(isDuplicate(allFiles[p], main_directory / category)) {
             rename(main_directory / fullFileName, duplicatePathCreator(allFiles[p], main_directory / category));
+            logApp(fullFileName, main_directory / category);
         } else {
             rename(main_directory / fullFileName, main_directory / category / fullFileName);
+            logApp(fullFileName, main_directory / category);
         }
     }
 }
 
 int main() {
-    path maindir = "Z:/fileorg_duplicate_test";
+    path maindir = "Z:/fileorg_experimentation - Copy - Copy";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;

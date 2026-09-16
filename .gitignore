@@ -4,3 +4,4 @@
 .vscode/tasks.json
 categories_debug.cpp
 organizer.log
+extensions_debug.cpp

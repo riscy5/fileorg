@@ -13,7 +13,7 @@ using namespace std::filesystem;
 using namespace std;
 
 // will NOT include extension in name, extracts SOLELY the filename
-string old_extractFilename(const path& f) {
+string old_extractFilename(const path &f) {
     string filenameWithExt = f.filename().string();
     string filenameNoExt;
     int extIndex = -1;
@@ -58,6 +58,12 @@ void directoryfilesToVector(vector<file> &v, const path &d) {
     for(path it : directory_iterator(d)) {
         input.filename = old_extractFilename(it);
         input.extension = extractExtension(it);
+
+        // .ini files are ignored (dangerous move - especially on desktop)
+        if(input.extension == ".ini") {
+            continue;
+        }
+        
         v.insert(v.end(), input);
     }
 }
@@ -159,9 +165,9 @@ void logHeader(const path &logOutPath = "organizer.log") {
     logFile.close();
 }
 
-void createAndMoveFiles(const vector<file> &allFiles, const path main_directory) {
+void moveFilesByCategory(const vector<file> &allFiles, const path &main_directory) {
     logHeader();
-    
+
     for(int p = 0; p < allFiles.size(); p++){
         // checks whether extension belongs in the hash map
         auto check = hashedExtensions.find(allFiles[p].extension);
@@ -184,6 +190,7 @@ void createAndMoveFiles(const vector<file> &allFiles, const path main_directory)
             continue;
         }
 
+
         if(isDuplicate(allFiles[p], main_directory / category)) {
             rename(main_directory / fullFileName, duplicatePathCreator(allFiles[p], main_directory / category));
             logApp(fullFileName, main_directory / category);
@@ -194,8 +201,13 @@ void createAndMoveFiles(const vector<file> &allFiles, const path main_directory)
     }
 }
 
+void moveFilesByExtension(const vector<file> &allFiles, const path &main_directory) {
+
+}
+
 int main() {
-    path maindir = "Z:/fileorg_experimentation - Copy - Copy - Copy";
+    path maindir = "C:/Users/Giovanni/Desktop";
+    path publicdesktop = "C:/Users/Public/Desktop";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;
@@ -205,6 +217,6 @@ int main() {
     vector<file> allFiles;
     directoryfilesToVector(allFiles, maindir);
     displayAllFiles(allFiles);
-    createAndMoveFiles(allFiles, maindir);
-
+    moveFilesByCategory(allFiles, maindir);
+    moveFilesByCategory(allFiles, publicdesktop);
 }

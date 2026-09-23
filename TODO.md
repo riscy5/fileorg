@@ -8,3 +8,4 @@
 - [x] Handling files of the same name
 - [x] Adding Desktop exceptions (Recycle Bin & desktop.ini)
 - [x] Extension-based organization support
+- [ ] Add additional support for Public Desktop

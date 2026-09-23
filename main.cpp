@@ -127,6 +127,26 @@ string categoryFinder(const file &c, const path &mainDir, const auto iterator) {
     return category;
 }
 
+string extensionFinder(const file &c, const path &mainDir, const auto iterator) {
+    string extension;
+
+    // Following comments indicate case
+        
+    // WARNING: Technically a pre-existing extension folder has a filename of the respective extension, therefore to skip it check c.filename NOT c.extension
+        if (is_directory(mainDir / c.filename) && hashedExtensionSet.find(c.filename) != hashedExtensionSet.end()) {
+            // this entry is itself an existing extension folder (e.g. ".jpg"), not a file to sort — skip it so it never gets moved
+            // extension (string) is empty, a continue statement existed in place of this
+        } else if (iterator != hashedExtensionSet.end()) {
+            // extension matched an entry in hashedExtensionSet, so use its mapped extension
+            extension = *iterator;
+        } else {
+            // extension is unknown, so classify as "Miscellaneous"
+            extension = "Miscellaneous";
+        }
+
+    return extension;
+}
+
 // Use the directory where file will go (destination)!
 void logApp(const string &fullFileName, const path &dest, const path &logOutPath = "organizer.log") {
     ofstream logFile(logOutPath, ios::app);
@@ -202,12 +222,39 @@ void moveFilesByCategory(const vector<file> &allFiles, const path &main_director
 }
 
 void moveFilesByExtension(const vector<file> &allFiles, const path &main_directory) {
+    logHeader();
 
+    for(int p = 0; p < allFiles.size(); p++) {
+        auto check = hashedExtensionSet.find(allFiles[p].extension);
+        string extension = extensionFinder(allFiles[p], main_directory, check);
+    
+        if (extension.empty()) {
+            continue;
+        }
+
+        if(!exists(main_directory / extension)) {
+            create_directory(main_directory / extension);
+        }
+
+        string fullFileName = allFiles[p].filename + allFiles[p].extension; 
+
+        // check if its a self-nesting directory
+        if(main_directory / fullFileName / fullFileName == main_directory / extension / fullFileName) {
+            continue;
+        }
+
+        if(isDuplicate(allFiles[p], main_directory / extension)) {
+            rename(main_directory / fullFileName, duplicatePathCreator(allFiles[p], main_directory / extension));
+            logApp(fullFileName, main_directory / extension);
+        } else {
+            rename(main_directory / fullFileName, main_directory / extension / fullFileName);
+            logApp(fullFileName, main_directory / extension);
+        }
+    }
 }
 
 int main() {
-    path maindir = "C:/Users/Giovanni/Desktop";
-    path publicdesktop = "C:/Users/Public/Desktop";
+    path maindir = "Z:/fileorg_experimentation - Copy - Copy - Copy (3)";
 
     if(!exists(maindir)) {
         cout << "Directory does not exist." << endl;
@@ -217,6 +264,6 @@ int main() {
     vector<file> allFiles;
     directoryfilesToVector(allFiles, maindir);
     displayAllFiles(allFiles);
-    moveFilesByCategory(allFiles, maindir);
-    moveFilesByCategory(allFiles, publicdesktop);
+    moveFilesByExtension(allFiles, maindir);
+
 }

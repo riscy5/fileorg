@@ -7,9 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
-using namespace std;
-
-const map<string, vector<string>> categoryGroups = {
+const std::map<std::string, std::vector<std::string>> categoryGroups = {
     {"Documents", {".pdf", ".doc", ".docx", ".txt", ".rtf", ".odt", ".md", ".csv", ".xls", ".xlsx", ".ppt", ".pptx", ".pages", ".key", ".numbers", ".odp", ".ods", ".epub", ".tex", ".xps", ".log"}},
     {"Images",    {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg", ".webp", ".tiff", ".tif", ".ico", ".heic", ".raw", ".psd", ".avif", ".heif", ".ai", ".eps", ".indd", ".cr2", ".nef", ".arw", ".dng"}},
     {"Videos",    {".mp4", ".mov", ".avi", ".mkv", ".wmv", ".flv", ".webm", ".m4v", ".mpg", ".mpeg", ".3gp", ".ts", ".m2ts", ".vob", ".ogv"}},
@@ -22,12 +20,12 @@ const map<string, vector<string>> categoryGroups = {
     {"System Library", {".dll", ".sys", ".ocx", ".drv", ".cpl", ".icl", ".fon", ".vxd", ".tlb", ".olb", ".mui", ".efi"}},
 };
 
-unordered_map<string,string> buildExtensionMap() {
-    unordered_map<string,string> extensionMap;
+std::unordered_map<std::string, std::string> buildExtensionMap() {
+    std::unordered_map<std::string, std::string> extensionMap;
 
     for(auto catIt = categoryGroups.begin(); catIt != categoryGroups.end(); ++catIt) {
         string cat = (*catIt).first;
-        vector<string> ext = (*catIt).second;
+        std::vector<string> ext = (*catIt).second;
 
         for(auto extIt = ext.begin(); extIt != ext.end(); ++extIt) {
             extensionMap[*extIt] = cat;
@@ -37,11 +35,11 @@ unordered_map<string,string> buildExtensionMap() {
     return extensionMap;
 }
 
-unordered_set<string> buildExtensionSet() {
-    unordered_set<string> extensionSet;
+std::unordered_set<std::string> buildExtensionSet() {
+     std::unordered_set<std::string> extensionSet; extensionSet;
 
     for(auto catIt = categoryGroups.begin(); catIt != categoryGroups.end(); ++catIt) {
-        vector<string> exts = (*catIt).second;
+        std::vector<std::string> exts = (*catIt).second;
         
         for(auto extIt = exts.begin(); extIt != exts.end(); ++extIt) {
             extensionSet.insert( (*extIt) );
@@ -52,7 +50,7 @@ unordered_set<string> buildExtensionSet() {
     return extensionSet;
 }
 
-unordered_set<string> hashedExtensionSet = buildExtensionSet();
-unordered_map<string, string> hashedExtensions = buildExtensionMap();
+std::unordered_set<std::string> hashedExtensionSet = buildExtensionSet();
+std::unordered_map<std::string, std::string> hashedExtensions = buildExtensionMap();
 
 #endif

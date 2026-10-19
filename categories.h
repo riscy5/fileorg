@@ -24,8 +24,8 @@ std::unordered_map<std::string, std::string> buildExtensionMap() {
     std::unordered_map<std::string, std::string> extensionMap;
 
     for(auto catIt = categoryGroups.begin(); catIt != categoryGroups.end(); ++catIt) {
-        string cat = (*catIt).first;
-        std::vector<string> ext = (*catIt).second;
+        std::string cat = (*catIt).first;
+        std::vector<std::string> ext = (*catIt).second;
 
         for(auto extIt = ext.begin(); extIt != ext.end(); ++extIt) {
             extensionMap[*extIt] = cat;
